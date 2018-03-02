@@ -18,17 +18,19 @@ for line in lines:
 chars = len(starts[0])
 
 
-def reduc(hsh):
-    plain = hsh[0:chars-1]
-    return plain
+def reduc(hsh, col):
+    plain = hsh[0:chars]
+    plainint = (int(plain, 16) + col) % (2**n)
+    return ((str(hex(plainint))[2:]).zfill(chars)).replace("L", "")
 
 def makeHash(plain):
     global aes
     aes += 1
-    key = binascii.unhexlify(("0"*(32-chars)) + ("0" * (chars-len(str(plain)))) + str(plain))
+    key = binascii.unhexlify(("0"*(32-chars)) + str(plain))
     IV = 16 * '\x00'
     #IV = os.urandom(16)
     encryptor = AES.new(key, AES.MODE_CBC, IV=IV)
+    print binascii.hexlify(encryptor.encrypt("\x00"*16))
     return binascii.hexlify(encryptor.encrypt("\x00"*16))
     
 def findpass(hsh, collisions):
