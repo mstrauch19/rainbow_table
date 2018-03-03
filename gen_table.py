@@ -22,7 +22,7 @@ def makeHash(plain):
     IV = 16 * '\x00'
     #IV = os.urandom(16)
     encryptor = AES.new(key, AES.MODE_CBC, IV=IV)
-    print binascii.hexlify(encryptor.encrypt("\x00"*16))
+    #print binascii.hexlify(encryptor.encrypt("\x00"*16))
     return binascii.hexlify(encryptor.encrypt("\x00"*16))
 
 def gen_table():
@@ -46,7 +46,8 @@ def gen_table():
         ends.append(makeHash(plain))
         depth += 1
     return [starts,ends]
-print makeHash("ABCABC") 
+
+#print makeHash("abc")
 data = gen_table()
 f = open("rainbow", "w");
 for i in range(len(data[0])):
