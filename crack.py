@@ -4,22 +4,29 @@ import binascii
 import base64
 import hashlib
 from Crypto.Cipher import AES
+import pickle
+import random
 
-toCrack = sys.argv[1]
+toCrack = sys.argv[2]
 aes = 0
 starts = []
 ends = []
-lines = open("rainbow", "r").readlines()
+lines = open("rainbow", "rb")
+a= "a"
+while a != "":
+    a= lines.read(16)
+    if a != "":
+        ends.append(binascii.hexlify(a))
+n = int(sys.argv[1])
+chars = n/4
+
+random.seed(16)
 i = 0
-for line in lines:
-    split = line.strip().split(" ")
-    starts.append((split[0]))
-    ends.append((split[1]))
+while i < len(ends):
+    plain = (str(hex(random.randrange(0,2**n)))[2:]).zfill(chars)
+    plain = plain.replace("L","")
+    starts.append(plain)
     i += 1
-
-chars = len(starts[0])
-n = chars * 4
-
 
 def reduc(hsh, col):
     plain = hsh[0:chars]
@@ -42,7 +49,7 @@ def findpass(hsh, collisions):
     for index in collisions:
         chains[index] = starts[index]
     i = 0
-    while i < len(ends):
+    while i < 2**(n/2):
         for index in chains.keys():
             nxt = makeHash(chains[index])
             if nxt == hsh:
@@ -55,7 +62,7 @@ def findpass(hsh, collisions):
     return False
 
 def crack(hsh):
-    top = len(ends)
+    top = 2 ** (n/2)
     i = top
     use = hsh
     while i >= 0:

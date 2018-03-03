@@ -6,6 +6,7 @@ import sys
 import binascii
 import os
 import random
+import pickle
 
 digits = sys.argv[1]
 n = int(digits)
@@ -28,7 +29,7 @@ def makeHash(plain):
 def gen_table():
     random.seed(16)
     length = 2**(n // 2)
-    tablesize = length
+    tablesize = 3 * length
     starts = []
     ends = []
 
@@ -49,6 +50,8 @@ def gen_table():
 
 #print makeHash("abc")
 data = gen_table()
-f = open("rainbow", "w");
+#with open("rainbow", "w") as f:
+#    pickle.dump(data[1], f)
+f = open("rainbow","wb")
 for i in range(len(data[0])):
-    f.write(str(data[0][i]) + " " + str(data[1][i]) + "\n")
+    f.write(str(binascii.unhexlify(data[1][i])))
